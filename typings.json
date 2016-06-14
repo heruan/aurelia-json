@@ -1,7 +1,7 @@
 {
   "name": "aurelia-json",
   "homepage": "https://github.com/heruan/aurelia-json",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "main": "dist/es2015/index.d.ts",
   "dependencies": {
     "aurelia-http-utils": "github:heruan/aurelia-http-utils#0.1.2"
