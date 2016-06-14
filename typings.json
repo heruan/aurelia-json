@@ -4,6 +4,6 @@
   "version": "0.1.0",
   "main": "dist/es2015/index.d.ts",
   "dependencies": {
-    "http-utils": "github:heruan/http-utils#f1306fb"
+    "aurelia-http-utils": "github:heruan/aurelia-http-utils#0.1.2"
   }
 }
