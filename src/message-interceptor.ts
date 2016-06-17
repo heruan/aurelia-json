@@ -1,6 +1,6 @@
 import {autoinject} from "aurelia-dependency-injection";
 import {Interceptor, HttpRequestMessage, HttpResponseMessage} from "aurelia-http-client";
-import {HttpHeaders, MediaType} from "http-utils";
+import {HttpHeaders, MediaType} from "aurelia-http-utils";
 import {JsonEncoder} from "./json-encoder";
 import {JsonDecoder} from "./json-decoder";
 import {JsonPatch} from "./patch";

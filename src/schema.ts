@@ -1,7 +1,5 @@
 export class JsonSchema extends Map<string, any> {
 
-    public static get [Symbol.species]() { return Map; }
-
     public static asMapReviver(key, value) {
         if (value === null || Array.isArray(value) || typeof value !== "object" || value instanceof Map) {
             return value;
