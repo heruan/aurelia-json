@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var aurelia_dependency_injection_1 = require("aurelia-dependency-injection");
-var http_utils_1 = require("http-utils");
+var aurelia_http_utils_1 = require("aurelia-http-utils");
 var json_encoder_1 = require("./json-encoder");
 var json_decoder_1 = require("./json-decoder");
 var JsonMessageInterceptor = (function () {
@@ -17,13 +17,13 @@ var JsonMessageInterceptor = (function () {
         this.jsonDecoder = jsonDecoder;
     }
     JsonMessageInterceptor.prototype.request = function (message) {
-        var contentType = message.headers.get(http_utils_1.HttpHeaders.CONTENT_TYPE);
+        var contentType = message.headers.get(aurelia_http_utils_1.HttpHeaders.CONTENT_TYPE);
         switch (contentType) {
-            case http_utils_1.MediaType.APPLICATION_JSON:
+            case aurelia_http_utils_1.MediaType.APPLICATION_JSON:
                 var jsonEncoder = new json_encoder_1.JsonEncoder();
                 message.replacer = jsonEncoder.replacer.bind(jsonEncoder);
                 break;
-            case http_utils_1.MediaType.APPLICATION_JSON_PATCH:
+            case aurelia_http_utils_1.MediaType.APPLICATION_JSON_PATCH:
                 var patch = message.content;
                 message.content = patch.getArray().map(function (op) {
                     var jsonEncoder = new json_encoder_1.JsonEncoder();
@@ -34,8 +34,8 @@ var JsonMessageInterceptor = (function () {
         return message;
     };
     JsonMessageInterceptor.prototype.response = function (message) {
-        var contentType = message.headers.get(http_utils_1.HttpHeaders.CONTENT_TYPE);
-        if (contentType && contentType.match(new RegExp("^" + http_utils_1.MediaType.APPLICATION_JSON))) {
+        var contentType = message.headers.get(aurelia_http_utils_1.HttpHeaders.CONTENT_TYPE);
+        if (contentType && contentType.match(new RegExp("^" + aurelia_http_utils_1.MediaType.APPLICATION_JSON))) {
             message.reviver = this.jsonDecoder.reviver.bind(this.jsonDecoder);
         }
         return message;
