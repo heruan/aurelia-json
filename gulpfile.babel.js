@@ -15,5 +15,5 @@ const clean = [ typescriptOutput ];
 
 gulp.task("clean", done => gulp.src(clean).pipe(paths(del)));
 gulp.task("build", [ "clean" ], done => gulp.src(typescriptSources).pipe(tsc()).pipe(gulp.dest(typescriptOutput)));
-gulp.task("test", done => gulp.src(testSuites).pipe(jasmine()));
+gulp.task("test", [ "build" ], done => gulp.src(testSuites).pipe(jasmine()));
 gulp.task("default", () => run("build", "test"));
