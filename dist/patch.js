@@ -4,6 +4,13 @@ var JsonPatch = (function () {
         if (operations === void 0) { operations = []; }
         this.operations = operations;
     }
+    Object.defineProperty(JsonPatch.prototype, "length", {
+        get: function () {
+            return this.operations.length;
+        },
+        enumerable: true,
+        configurable: true
+    });
     JsonPatch.prototype.add = function (path, value, index) {
         if (index === void 0) { index = -1; }
         this.operations.push({

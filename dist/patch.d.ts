@@ -1,6 +1,7 @@
 export declare class JsonPatch {
     private operations;
     constructor(operations?: any[]);
+    readonly length: number;
     add(path: string, value: any, index?: number): JsonPatch;
     remove(path: string, index?: number): JsonPatch;
     replace(path: string, value: any): JsonPatch;

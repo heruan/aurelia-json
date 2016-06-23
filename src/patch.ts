@@ -6,6 +6,10 @@ export class JsonPatch {
         this.operations = operations;
     }
 
+    get length() {
+        return this.operations.length;
+    }
+
     public add(path: string, value: any, index: number = -1): JsonPatch {
         this.operations.push({
             "op": "add",
