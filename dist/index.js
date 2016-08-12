@@ -10,6 +10,8 @@ var json_encoder_1 = require("./json-encoder");
 exports.JsonEncoder = json_encoder_1.JsonEncoder;
 var json_decoder_1 = require("./json-decoder");
 exports.JsonDecoder = json_decoder_1.JsonDecoder;
+var json_mapper_1 = require("./json-mapper");
+exports.JsonMapper = json_mapper_1.JsonMapper;
 var message_interceptor_1 = require("./message-interceptor");
 exports.JsonMessageInterceptor = message_interceptor_1.JsonMessageInterceptor;
 function configure(frameworkConfiguration, pluginConfiguration) {
@@ -26,4 +28,3 @@ function configure(frameworkConfiguration, pluginConfiguration) {
     }
 }
 exports.configure = configure;
-//# sourceMappingURL=index.js.map
