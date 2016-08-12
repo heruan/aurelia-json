@@ -38,26 +38,31 @@ var JsonDecoder = (function () {
             if (Array.isArray(target[property])) {
                 var targetArray = target[property];
                 var sourceArray = source[property];
-                for (var _a = 0, sourceArray_1 = sourceArray; _a < sourceArray_1.length; _a++) {
-                    var item = sourceArray_1[_a];
-                    var targetIndex = targetArray.indexOf(item);
-                    var sourceIndex = sourceArray.indexOf(item);
-                    if (targetIndex < 0) {
-                        patch.remove(prefix + property, sourceIndex);
-                    }
+                if (!Array.isArray(sourceArray)) {
+                    patch.replace(prefix + property, targetArray);
                 }
-                for (var _b = 0, targetArray_1 = targetArray; _b < targetArray_1.length; _b++) {
-                    var item = targetArray_1[_b];
-                    var targetIndex = targetArray.indexOf(item);
-                    var sourceIndex = sourceArray.indexOf(item);
-                    if (sourceIndex < 0) {
-                        patch.add(prefix + property, item);
-                    }
-                    else {
-                        if (targetIndex !== sourceIndex) {
+                else {
+                    for (var _a = 0, sourceArray_1 = sourceArray; _a < sourceArray_1.length; _a++) {
+                        var item = sourceArray_1[_a];
+                        var targetIndex = targetArray.indexOf(item);
+                        var sourceIndex = sourceArray.indexOf(item);
+                        if (targetIndex < 0) {
+                            patch.remove(prefix + property, sourceIndex);
                         }
-                        if (!seen.has(item) && this.rev.has(item)) {
-                            this.diff(item, [], patch, (prefix + property) + "/" + targetIndex + "/", seen);
+                    }
+                    for (var _b = 0, targetArray_1 = targetArray; _b < targetArray_1.length; _b++) {
+                        var item = targetArray_1[_b];
+                        var targetIndex = targetArray.indexOf(item);
+                        var sourceIndex = sourceArray.indexOf(item);
+                        if (sourceIndex < 0) {
+                            patch.add(prefix + property, item);
+                        }
+                        else {
+                            if (targetIndex !== sourceIndex) {
+                            }
+                            if (!seen.has(item) && this.rev.has(item)) {
+                                this.diff(item, [], patch, (prefix + property) + "/" + targetIndex + "/", seen);
+                            }
                         }
                     }
                 }
@@ -124,7 +129,7 @@ var JsonDecoder = (function () {
                 if (!Array.isArray(targetValue)) {
                     target[property] = sourceValue;
                 }
-                else
+                else {
                     for (var _i = 0, sourceValue_1 = sourceValue; _i < sourceValue_1.length; _i++) {
                         var item = sourceValue_1[_i];
                         var sourceIndex = sourceValue.indexOf(item);
@@ -132,6 +137,8 @@ var JsonDecoder = (function () {
                             targetValue.splice(sourceIndex, 1, item);
                         }
                     }
+                    targetValue.splice(sourceValue.length);
+                }
             }
             else {
                 target[property] = sourceValue;
@@ -155,4 +162,3 @@ var JsonDecoder = (function () {
     return JsonDecoder;
 }());
 exports.JsonDecoder = JsonDecoder;
-//# sourceMappingURL=json-decoder.js.map

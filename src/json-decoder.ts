@@ -45,24 +45,28 @@ export class JsonDecoder {
             if (Array.isArray(target[property])) {
                 let targetArray = target[property];
                 let sourceArray = source[property];
-                for (let item of sourceArray) {
-                    let targetIndex = targetArray.indexOf(item);
-                    let sourceIndex = sourceArray.indexOf(item);
-                    if (targetIndex < 0) {
-                        patch.remove(prefix + property, sourceIndex);
-                    }
-                }
-                for (let item of targetArray) {
-                    let targetIndex = targetArray.indexOf(item);
-                    let sourceIndex = sourceArray.indexOf(item);
-                    if (sourceIndex < 0) {
-                        patch.add(prefix + property, item);
-                    } else {
-                        if (targetIndex !== sourceIndex) {
-                            //patch.move(`${prefix + property}/${sourceIndex}`, `${prefix + property}/${targetIndex}`);
+                if (!Array.isArray(sourceArray)) {
+                    patch.replace(prefix + property, targetArray);
+                } else {
+                    for (let item of sourceArray) {
+                        let targetIndex = targetArray.indexOf(item);
+                        let sourceIndex = sourceArray.indexOf(item);
+                        if (targetIndex < 0) {
+                            patch.remove(prefix + property, sourceIndex);
                         }
-                        if (!seen.has(item) && this.rev.has(item)) {
-                            this.diff(item, [], patch, `${prefix + property}/${targetIndex}/`, seen);
+                    }
+                    for (let item of targetArray) {
+                        let targetIndex = targetArray.indexOf(item);
+                        let sourceIndex = sourceArray.indexOf(item);
+                        if (sourceIndex < 0) {
+                            patch.add(prefix + property, item);
+                        } else {
+                            if (targetIndex !== sourceIndex) {
+                                //patch.move(`${prefix + property}/${sourceIndex}`, `${prefix + property}/${targetIndex}`);
+                            }
+                            if (!seen.has(item) && this.rev.has(item)) {
+                                this.diff(item, [], patch, `${prefix + property}/${targetIndex}/`, seen);
+                            }
                         }
                     }
                 }
@@ -123,11 +127,14 @@ export class JsonDecoder {
             if (Array.isArray(sourceValue)) {
                 if (!Array.isArray(targetValue)) {
                     target[property] = sourceValue;
-                } else for (let item of sourceValue) {
-                    let sourceIndex = sourceValue.indexOf(item);
-                    if (item !== targetValue[sourceIndex]) {
-                        targetValue.splice(sourceIndex, 1, item);
+                } else {
+                    for (let item of sourceValue) {
+                        let sourceIndex = sourceValue.indexOf(item);
+                        if (item !== targetValue[sourceIndex]) {
+                            targetValue.splice(sourceIndex, 1, item);
+                        }
                     }
+                    targetValue.splice(sourceValue.length);
                 }
             } else {
                 target[property] = sourceValue;
