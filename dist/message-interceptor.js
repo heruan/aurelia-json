@@ -47,4 +47,3 @@ var JsonMessageInterceptor = (function () {
     return JsonMessageInterceptor;
 }());
 exports.JsonMessageInterceptor = JsonMessageInterceptor;
-//# sourceMappingURL=message-interceptor.js.map
