@@ -19,10 +19,6 @@ var JsonMessageInterceptor = (function () {
     JsonMessageInterceptor.prototype.request = function (message) {
         var contentType = message.headers.get(aurelia_http_utils_1.HttpHeaders.CONTENT_TYPE);
         switch (contentType) {
-            case aurelia_http_utils_1.MediaType.APPLICATION_JSON:
-                var jsonEncoder = new json_encoder_1.JsonEncoder();
-                message.replacer = jsonEncoder.replacer.bind(jsonEncoder);
-                break;
             case aurelia_http_utils_1.MediaType.APPLICATION_JSON_PATCH:
                 var patch = message.content;
                 message.content = patch.getArray().map(function (op) {
@@ -30,6 +26,10 @@ var JsonMessageInterceptor = (function () {
                     return JSON.parse(jsonEncoder.encode(op));
                 });
                 break;
+            case aurelia_http_utils_1.MediaType.APPLICATION_JSON:
+            default:
+                var jsonEncoder = new json_encoder_1.JsonEncoder();
+                message.replacer = jsonEncoder.replacer.bind(jsonEncoder);
         }
         return message;
     };

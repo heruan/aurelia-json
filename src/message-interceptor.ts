@@ -17,10 +17,6 @@ export class JsonMessageInterceptor implements Interceptor {
     public request(message: HttpRequestMessage): HttpRequestMessage {
         let contentType = message.headers.get(HttpHeaders.CONTENT_TYPE);
         switch (contentType) {
-            case MediaType.APPLICATION_JSON:
-            let jsonEncoder = new JsonEncoder();
-            message.replacer = jsonEncoder.replacer.bind(jsonEncoder);
-            break;
             case MediaType.APPLICATION_JSON_PATCH:
             let patch: JsonPatch = message.content;
             message.content = patch.getArray().map(op => {
@@ -28,6 +24,10 @@ export class JsonMessageInterceptor implements Interceptor {
                 return JSON.parse(jsonEncoder.encode(op));
             });
             break;
+            case MediaType.APPLICATION_JSON:
+            default:
+            let jsonEncoder = new JsonEncoder();
+            message.replacer = jsonEncoder.replacer.bind(jsonEncoder);
         }
 
         return message;
