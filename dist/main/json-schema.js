@@ -7,7 +7,7 @@ var __extends = (this && this.__extends) || function (d, b) {
 var JsonSchema = (function (_super) {
     __extends(JsonSchema, _super);
     function JsonSchema(schema) {
-        _super.call(this, JSON.parse(schema, JsonSchema.asMapReviver));
+        return _super.call(this, JSON.parse(schema, JsonSchema.asMapReviver)) || this;
     }
     JsonSchema.asMapReviver = function (key, value) {
         if (value === null || Array.isArray(value) || typeof value !== "object" || value instanceof Map) {
