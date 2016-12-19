@@ -139,3 +139,5 @@ var JsonPatch = (function () {
     return JsonPatch;
 }());
 exports.JsonPatch = JsonPatch;
+
+//# sourceMappingURL=json-patch.js.map

@@ -33,3 +33,5 @@ describe("json-encoder", function () {
         expect(json).toBe('{"id":1,"items":[{"item":1},{"item":2}],"foo":{"baz":123}}');
     });
 });
+
+//# sourceMappingURL=json-encoder.js.map

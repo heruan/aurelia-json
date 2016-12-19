@@ -55,7 +55,6 @@ var JsonEncoder = (function () {
     };
     return JsonEncoder;
 }());
-exports.JsonEncoder = JsonEncoder;
 JsonEncoder.START_OBJECT = "{";
 JsonEncoder.END_OBJECT = "}";
 JsonEncoder.START_ARRAY = "[";
@@ -67,3 +66,6 @@ JsonEncoder.VALUE_TRUE = "true";
 JsonEncoder.VALUE_FALSE = "false";
 JsonEncoder.DEFINITION = ":";
 JsonEncoder.SEPARATOR = ",";
+exports.JsonEncoder = JsonEncoder;
+
+//# sourceMappingURL=json-encoder.js.map

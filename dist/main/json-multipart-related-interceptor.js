@@ -20,3 +20,5 @@ var JsonMultipartRelatedInterceptor = (function () {
     return JsonMultipartRelatedInterceptor;
 }());
 exports.JsonMultipartRelatedInterceptor = JsonMultipartRelatedInterceptor;
+
+//# sourceMappingURL=json-multipart-related-interceptor.js.map

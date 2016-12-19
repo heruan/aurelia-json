@@ -107,3 +107,5 @@ describe("json-patch", function () {
             '{"op":"replace","path":"/foobars/0","value":[{"a":1},{"c":4}]}]');
     });
 });
+
+//# sourceMappingURL=json-patch.js.map

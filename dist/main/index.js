@@ -23,3 +23,5 @@ function configure(frameworkConfiguration, pluginConfiguration) {
     }
 }
 exports.configure = configure;
+
+//# sourceMappingURL=index.js.map

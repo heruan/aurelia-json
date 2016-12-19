@@ -5,3 +5,5 @@ var JsonPointer = (function () {
     return JsonPointer;
 }());
 exports.JsonPointer = JsonPointer;
+
+//# sourceMappingURL=json-pointer.js.map

@@ -1,12 +1,12 @@
-import { FrameworkConfiguration} from "aurelia-framework";
-import { Container} from "aurelia-dependency-injection";
-import { HttpClient} from "aurelia-http-client";
-import { JsonSchema} from "./json-schema";
-import { JsonPatch} from "./json-patch";
-import { JsonPointer} from "./json-pointer";
-import { JsonEncoder} from "./json-encoder";
-import { JsonDecoder} from "./json-decoder";
-import { JsonMultipartRelatedInterceptor} from "./json-multipart-related-interceptor";
+import { FrameworkConfiguration } from "aurelia-framework";
+import { Container } from "aurelia-dependency-injection";
+import { HttpClient } from "aurelia-http-client";
+import { JsonSchema } from "./json-schema";
+import { JsonPatch } from "./json-patch";
+import { JsonPointer } from "./json-pointer";
+import { JsonEncoder } from "./json-encoder";
+import { JsonDecoder } from "./json-decoder";
+import { JsonMultipartRelatedInterceptor } from "./json-multipart-related-interceptor";
 
 export function configure(frameworkConfiguration: FrameworkConfiguration, pluginConfiguration: Function) {
     let container: Container = frameworkConfiguration.container;
@@ -19,4 +19,4 @@ export function configure(frameworkConfiguration: FrameworkConfiguration, plugin
     }
 }
 
-export { JsonSchema, JsonPatch, JsonPointer, JsonEncoder, JsonDecoder, JsonMultipartRelatedInterceptor};
+export { JsonSchema, JsonPatch, JsonPointer, JsonEncoder, JsonDecoder, JsonMultipartRelatedInterceptor };

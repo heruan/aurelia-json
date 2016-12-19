@@ -27,3 +27,5 @@ var JsonSchema = (function (_super) {
     return JsonSchema;
 }(Map));
 exports.JsonSchema = JsonSchema;
+
+//# sourceMappingURL=json-schema.js.map
