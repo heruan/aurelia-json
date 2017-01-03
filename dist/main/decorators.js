@@ -8,5 +8,9 @@ function jsonIgnore() {
     return Reflect.metadata(metadataKeys.jsonIgnore, properties);
 }
 exports.jsonIgnore = jsonIgnore;
+function serializer(serializer) {
+    return Reflect.metadata(metadataKeys.serializer, serializer);
+}
+exports.serializer = serializer;
 
 //# sourceMappingURL=decorators.js.map

@@ -23,23 +23,18 @@ describe("json-patch", () => {
         foo.b = 2;
         patch = JsonPatch.diff(foo);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 }
         ]);
         foo.bar.c = 4;
         patch = JsonPatch.diff(foo);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 },
-            { op: 'test', path: '/bar/c', value: 3 },
             { op: 'replace', path: '/bar/c', value: 4 }
         ]);
         foo.bar = new Bar();
-        patch = JsonPatch.diff(foo, { a: true, bar: true });
+        patch = JsonPatch.diff(foo, ["a", "bar"]);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 },
-            { op: 'test', path: '/bar', value: bar },
             { op: 'replace', path: '/bar', value: foo.bar }
         ]);
     });
@@ -57,7 +52,7 @@ describe("json-patch", () => {
 
             @bind(Map)
             @generics(Foo, Bar)
-            @trackIterable<[Foo, Bar], Map<Foo, Bar>>((v1, v2) => v1.every((v, i) => v === v2[i]))
+            @trackIterable<[Foo, Bar], Map<Foo, Bar>>(i => Array.from(i), (v1, v2) => v1.every((v, i) => v === v2[i]))
             foobars: Map<Foo, Bar>;
         }
 
@@ -77,9 +72,9 @@ describe("json-patch", () => {
         bag.foobars.set(foo, bar);
         let patch = JsonPatch.diff(bag);
         expect(new JsonEncoder().encode(patch)).toBe(
-            '[{"op":"test","path":"/numbers/0","value":1},' +
-            '{"op":"move","from":"/numbers/0","path":"/numbers/2"},' +
-            '{"op":"test","path":"/foobars/0","value":[{"a":1},{"c":1}]},' +
+            '[{"op":"replace","path":"/numbers/0","value":2},' +
+            '{"op":"replace","path":"/numbers/1","value":3},' +
+            '{"op":"replace","path":"/numbers/2","value":1},' +
             '{"op":"replace","path":"/foobars/0","value":[{"a":1},{"c":4}]}]'
         );
     });

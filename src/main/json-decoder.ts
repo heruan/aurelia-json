@@ -13,11 +13,13 @@ export class JsonDecoder {
 
     public decode<T>(json: string, type: new(...args) => T, ...generics: any[]): T {
         let object = JSON.parse(json);
-        return this.typeBinder.bind(object, type, ...generics);
+        return typeof type["fromJSON"] === "function"
+            ? type["fromJSON"](object, this, this.typeBinder)
+            : this.typeBinder.bind(object, type, ...generics);
     }
 
     public reviver(key: string, value: any): any {
-        
+
     }
 
 }

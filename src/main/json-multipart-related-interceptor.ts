@@ -13,10 +13,10 @@ export class JsonMultipartRelatedInterceptor implements Interceptor {
     public request(message: HttpRequestMessage): HttpRequestMessage {
         let multipartRelated = new MultipartRelated(this.contentType);
         let partId = 0;
-        let encoder = new JsonEncoder().withSerializer(File, file => {
-            multipartRelated.addPart(new Part(file, ContentType.valueOf(file.type)), (++partId).toString());
+        let encoder = new JsonEncoder().withSerializer<Blob>(blob => {
+            multipartRelated.addPart(new Part(blob, ContentType.valueOf(blob.type)), (++partId).toString());
             return partId.toString();
-        });
+        }, Blob, File);
         multipartRelated.addRootPart(new Part(encoder.encode(message.content), this.contentType), "/");
         message.content = multipartRelated.toBlob();
         return message;

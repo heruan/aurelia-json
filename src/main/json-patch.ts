@@ -1,4 +1,5 @@
-import { binderPropertyTrackValue, binderPropertyEntriesValue, binderPropertyTrackCompare, binderPropertyEntriesCompare } from "type-binder";
+import { binderPropertyTrackValue, binderPropertyEntriesValue, binderPropertyTrackCompare, binderPropertyEntries, binderPropertyEntriesCompare } from "type-binder";
+import * as metadataKeys from "./metadata-keys";
 
 export class JsonPatch {
 
@@ -12,7 +13,7 @@ export class JsonPatch {
         return this.operations.length;
     }
 
-    public add(path: string, value: any): JsonPatch {
+    public add<T>(path: string, value: T): JsonPatch {
         this.operations.push({
             "op": "add",
             path,
@@ -29,12 +30,14 @@ export class JsonPatch {
         return this;
     }
 
-    public replace(path: string, value: any): JsonPatch {
-        this.operations.push({
+    public replace<T>(path: string, value: T, serializer?: (value: T) => any): JsonPatch {
+        let op = {
             "op": "replace",
             path,
             value
-        });
+        };
+        Reflect.defineMetadata(metadataKeys.serializer, serializer, op, "value");
+        this.operations.push(op);
         return this;
     }
 
@@ -56,7 +59,7 @@ export class JsonPatch {
         return this;
     }
 
-    public test(path: string, value: any): JsonPatch {
+    public test<T>(path: string, value: T): JsonPatch {
         this.operations.push({
             "op": "test",
             path,
@@ -78,57 +81,39 @@ export class JsonPatch {
         return this.getArray();
     }
 
-    public static diff<T>(target: T, properties: Object = target, patch: JsonPatch = new JsonPatch(), prefix?: string, separator: string = "/", wildcard: string = "-"): JsonPatch {
-        for (let key in properties) {
-            let include = properties[key];
-            if (include) {
-                let currentValue = target[key];
-                if (Reflect.hasMetadata(binderPropertyTrackValue, target, key)) {
-                    let comparingCallback: (v1, v2) => boolean = Reflect.getMetadata(binderPropertyTrackCompare, target, key);
-                    let originalValue = Reflect.getMetadata(binderPropertyTrackValue, target, key);
-                    if (!comparingCallback(currentValue, originalValue)) {
-                        let pointer = [prefix, key].join(separator);
-                        patch.test(pointer, originalValue);
-                        patch.replace([prefix, key].join(separator), currentValue);
-                    } else if (currentValue !== null && typeof currentValue === "object") {
-                        JsonPatch.diff(currentValue, include, patch, [prefix, key].join(separator), separator, wildcard);
+    public static diff<T>(target: T, properties: string[] = Object.keys(target), patch: JsonPatch = new JsonPatch(), prefix?: string, separator: string = "/", wildcard: string = "-"): JsonPatch {
+        for (let key of properties) {
+            let currentValue = target[key];
+            if (Reflect.hasMetadata(binderPropertyTrackValue, target, key)) {
+                let comparingCallback: (v1, v2) => boolean = Reflect.getMetadata(binderPropertyTrackCompare, target, key);
+                let originalValue = Reflect.getMetadata(binderPropertyTrackValue, target, key);
+                if (!comparingCallback(currentValue, originalValue)) {
+                    let pointer = [prefix, key].join(separator);
+                    // patch.test(pointer, originalValue);
+                    patch.replace([prefix, key].join(separator), currentValue);
+                } else if (currentValue !== null && typeof currentValue === "object") {
+                    JsonPatch.diff(currentValue, Object.keys(currentValue), patch, [prefix, key].join(separator), separator, wildcard);
+                }
+            } else if (currentValue !== null && Reflect.hasMetadata(binderPropertyEntriesValue, target, key)) {
+                let trackingCallback: <I extends Iterable<V>, V>(iterable: I) => V[] = Reflect.getMetadata(binderPropertyEntries, target, key);
+                let comparingCallback: (v1, v2) => boolean = Reflect.getMetadata(binderPropertyEntriesCompare, target, key);
+                let originalEntries = <any[]> Reflect.getMetadata(binderPropertyEntriesValue, target, key);
+                let currentEntries = trackingCallback(currentValue);
+                originalEntries.forEach((value, index) => {
+                    let pointer = [prefix, key, index].join(separator);
+                    if (index >= currentEntries.length) {
+                        // patch.test(pointer, value);
+                        patch.remove(pointer);
+                    } else if (!comparingCallback(value, currentEntries[index])) {
+                        // patch.test(pointer, value);
+                        patch.replace(pointer, currentEntries[index], Reflect.getMetadata(metadataKeys.serializer, target, key));
+                    } else if (value !== null && typeof value === "object") {
+                        JsonPatch.diff(value, Object.keys(value), patch, pointer, separator, wildcard);
                     }
-                } else if (currentValue !== null && Reflect.hasMetadata(binderPropertyEntriesValue, target, key)) {
-                    let comparingCallback: (v1, v2) => boolean = Reflect.getMetadata(binderPropertyEntriesCompare, target, key);
-                    let originalEntries = <any[]> Reflect.getMetadata(binderPropertyEntriesValue, target, key);
-                    let originalLength = originalEntries.length;
-                    let originalTrack = originalEntries.slice();
-                    let currentEntries = Array.from(currentValue);
-                    let currentLength = currentEntries.length;
-                    let addEntries = currentEntries.slice();
-                    originalEntries.forEach(value => {
-                        let index = originalTrack.indexOf(value);
-                        let found = currentEntries.findIndex(item => comparingCallback(value, item));
-                        let from = [prefix, key, index].join(separator);
-                        if (found >= 0) {
-                            let pointer = [prefix, key, found].join(separator);
-                            if (found !== index) {
-                                patch.test(from, value);
-                                patch.move(from, pointer);
-                                originalTrack.splice(index, 1);
-                                originalTrack[found] = value;
-                            }
-                            addEntries.splice(addEntries.indexOf(currentEntries[found]), 1);
-                        } else if (index < currentLength) {
-                            patch.test(from, value);
-                            patch.replace(from, currentEntries[index]);
-                            originalTrack[index] = currentEntries[index];
-                            addEntries.splice(addEntries.indexOf(currentEntries[index]), 1);
-                        } else {
-                            patch.test(from, value);
-                            patch.remove(from);
-                            originalTrack.splice(index, 1);
-                        }
-                    });
-                    if (addEntries.length > 0) {
-                        let path = [prefix, key, wildcard].join(separator);
-                        addEntries.forEach(value => patch.add(path, value));
-                    }
+                });
+                if (currentEntries.length > originalEntries.length) {
+                    let path = [prefix, key, wildcard].join(separator);
+                    currentEntries.slice(originalEntries.length).forEach(value => patch.add(path, value));
                 }
             }
         }

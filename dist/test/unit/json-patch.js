@@ -43,23 +43,18 @@ describe("json-patch", function () {
         foo.b = 2;
         patch = json_patch_1.JsonPatch.diff(foo);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 }
         ]);
         foo.bar.c = 4;
         patch = json_patch_1.JsonPatch.diff(foo);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 },
-            { op: 'test', path: '/bar/c', value: 3 },
             { op: 'replace', path: '/bar/c', value: 4 }
         ]);
         foo.bar = new Bar();
-        patch = json_patch_1.JsonPatch.diff(foo, { a: true, bar: true });
+        patch = json_patch_1.JsonPatch.diff(foo, ["a", "bar"]);
         expect(patch.toJSON()).toEqual([
-            { op: 'test', path: '/a', value: 1 },
             { op: 'replace', path: '/a', value: 2 },
-            { op: 'test', path: '/bar', value: bar },
             { op: 'replace', path: '/bar', value: foo.bar }
         ]);
     });
@@ -83,7 +78,7 @@ describe("json-patch", function () {
         __decorate([
             type_binder_1.bind(Map),
             type_binder_1.generics(Foo, Bar),
-            type_binder_1.trackIterable(function (v1, v2) { return v1.every(function (v, i) { return v === v2[i]; }); }),
+            type_binder_1.trackIterable(function (i) { return Array.from(i); }, function (v1, v2) { return v1.every(function (v, i) { return v === v2[i]; }); }),
             __metadata("design:type", Map)
         ], Bag.prototype, "foobars", void 0);
         var bag = new type_binder_1.TypeBinder().bind({
@@ -101,9 +96,9 @@ describe("json-patch", function () {
         bar.c = 4;
         bag.foobars.set(foo, bar);
         var patch = json_patch_1.JsonPatch.diff(bag);
-        expect(new json_encoder_1.JsonEncoder().encode(patch)).toBe('[{"op":"test","path":"/numbers/0","value":1},' +
-            '{"op":"move","from":"/numbers/0","path":"/numbers/2"},' +
-            '{"op":"test","path":"/foobars/0","value":[{"a":1},{"c":1}]},' +
+        expect(new json_encoder_1.JsonEncoder().encode(patch)).toBe('[{"op":"replace","path":"/numbers/0","value":2},' +
+            '{"op":"replace","path":"/numbers/1","value":3},' +
+            '{"op":"replace","path":"/numbers/2","value":1},' +
             '{"op":"replace","path":"/foobars/0","value":[{"a":1},{"c":4}]}]');
     });
 });

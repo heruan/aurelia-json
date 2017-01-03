@@ -7,3 +7,4 @@ import { JsonDecoder } from "./json-decoder";
 import { JsonMultipartRelatedInterceptor } from "./json-multipart-related-interceptor";
 export declare function configure(frameworkConfiguration: FrameworkConfiguration, pluginConfiguration: Function): void;
 export { JsonSchema, JsonPatch, JsonPointer, JsonEncoder, JsonDecoder, JsonMultipartRelatedInterceptor };
+export * from "./decorators";

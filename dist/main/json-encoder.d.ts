@@ -12,5 +12,5 @@ export declare class JsonEncoder {
     static SEPARATOR: string;
     private serializers;
     encode(value: any, ignore?: string[]): string;
-    withSerializer<T>(type: new (...args: any[]) => T, serializer: (value: T) => string): JsonEncoder;
+    withSerializer<T>(serializer: (value: T) => string, ...types: (new (...args: any[]) => T)[]): JsonEncoder;
 }

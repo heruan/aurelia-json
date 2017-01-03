@@ -20,3 +20,4 @@ export function configure(frameworkConfiguration: FrameworkConfiguration, plugin
 }
 
 export { JsonSchema, JsonPatch, JsonPointer, JsonEncoder, JsonDecoder, JsonMultipartRelatedInterceptor };
+export * from "./decorators";

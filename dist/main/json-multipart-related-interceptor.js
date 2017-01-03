@@ -9,10 +9,10 @@ var JsonMultipartRelatedInterceptor = (function () {
     JsonMultipartRelatedInterceptor.prototype.request = function (message) {
         var multipartRelated = new aurelia_http_utils_1.MultipartRelated(this.contentType);
         var partId = 0;
-        var encoder = new json_encoder_1.JsonEncoder().withSerializer(File, function (file) {
-            multipartRelated.addPart(new aurelia_http_utils_1.Part(file, aurelia_http_utils_1.ContentType.valueOf(file.type)), (++partId).toString());
+        var encoder = new json_encoder_1.JsonEncoder().withSerializer(function (blob) {
+            multipartRelated.addPart(new aurelia_http_utils_1.Part(blob, aurelia_http_utils_1.ContentType.valueOf(blob.type)), (++partId).toString());
             return partId.toString();
-        });
+        }, Blob, File);
         multipartRelated.addRootPart(new aurelia_http_utils_1.Part(encoder.encode(message.content), this.contentType), "/");
         message.content = multipartRelated.toBlob();
         return message;

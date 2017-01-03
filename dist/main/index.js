@@ -1,4 +1,7 @@
 "use strict";
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 var aurelia_http_client_1 = require("aurelia-http-client");
 var json_schema_1 = require("./json-schema");
 exports.JsonSchema = json_schema_1.JsonSchema;
@@ -23,5 +26,6 @@ function configure(frameworkConfiguration, pluginConfiguration) {
     }
 }
 exports.configure = configure;
+__export(require("./decorators"));
 
 //# sourceMappingURL=index.js.map

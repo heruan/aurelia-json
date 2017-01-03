@@ -21,7 +21,9 @@ var JsonDecoder = (function () {
             generics[_i - 2] = arguments[_i];
         }
         var object = JSON.parse(json);
-        return (_a = this.typeBinder).bind.apply(_a, [object, type].concat(generics));
+        return typeof type["fromJSON"] === "function"
+            ? type["fromJSON"](object, this, this.typeBinder)
+            : (_a = this.typeBinder).bind.apply(_a, [object, type].concat(generics));
         var _a;
     };
     JsonDecoder.prototype.reviver = function (key, value) {

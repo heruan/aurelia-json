@@ -7,10 +7,11 @@ var JsonEncoder = (function () {
     JsonEncoder.prototype.encode = function (value, ignore) {
         var _this = this;
         if (ignore === void 0) { ignore = []; }
-        if (value === null) {
+        if (value === null || value === undefined) {
             return JsonEncoder.VALUE_NULL;
         }
-        else if (typeof value === "boolean") {
+        var prototype = Object.getPrototypeOf(value);
+        if (typeof value === "boolean") {
             return value ? JsonEncoder.VALUE_TRUE : JsonEncoder.VALUE_FALSE;
         }
         else if (typeof value === "number") {
@@ -28,29 +29,44 @@ var JsonEncoder = (function () {
             json += JsonEncoder.END_ARRAY;
             return json;
         }
+        else if (this.serializers.has(value.constructor)) {
+            return this.serializers.get(value.constructor)(value);
+        }
         else {
-            var prototype = Object.getPrototypeOf(value);
-            var serializer = this.serializers.get(value.constructor);
-            if (serializer) {
-                return serializer(value);
-            }
             var json = JsonEncoder.START_OBJECT;
             var properties = [];
-            for (var key in value) {
+            for (var _i = 0, _a = Object.keys(value); _i < _a.length; _i++) {
+                var key = _a[_i];
                 var jsonIgnore = Reflect.getMetadata(metadataKeys.jsonIgnore, prototype, key);
                 if (ignore.indexOf(key) < 0) {
                     properties.push({ key: key, value: value[key], ignore: jsonIgnore || [] });
                 }
             }
             json += properties.map(function (property) {
-                return JsonEncoder.START_STRING + property.key + JsonEncoder.END_STRING +
-                    JsonEncoder.DEFINITION + _this.encode(property.value, property.ignore);
+                var key = JsonEncoder.START_STRING + property.key + JsonEncoder.END_STRING;
+                var value;
+                if (property.value === null || property.value === undefined) {
+                    value = JsonEncoder.VALUE_NULL;
+                }
+                else if (Reflect.hasMetadata(metadataKeys.serializer, prototype, property.key)) {
+                    var serializer = Reflect.getMetadata(metadataKeys.serializer, prototype, property.key);
+                    value = _this.encode(serializer(property.value));
+                }
+                else {
+                    value = _this.encode(property.value, property.ignore);
+                }
+                return key + JsonEncoder.DEFINITION + value;
             }).join(JsonEncoder.SEPARATOR) + JsonEncoder.END_OBJECT;
             return json;
         }
     };
-    JsonEncoder.prototype.withSerializer = function (type, serializer) {
-        this.serializers.set(type, serializer);
+    JsonEncoder.prototype.withSerializer = function (serializer) {
+        var _this = this;
+        var types = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            types[_i - 1] = arguments[_i];
+        }
+        types.forEach(function (type) { return _this.serializers.set(type, serializer); });
         return this;
     };
     return JsonEncoder;

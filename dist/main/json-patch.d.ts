@@ -2,14 +2,14 @@ export declare class JsonPatch {
     private operations;
     constructor(operations?: any[]);
     readonly length: number;
-    add(path: string, value: any): JsonPatch;
+    add<T>(path: string, value: T): JsonPatch;
     remove(path: string): JsonPatch;
-    replace(path: string, value: any): JsonPatch;
+    replace<T>(path: string, value: T, serializer?: (value: T) => any): JsonPatch;
     copy(fromPath: string, toPath: string): JsonPatch;
     move(fromPath: string, toPath: string): JsonPatch;
-    test(path: string, value: any): JsonPatch;
+    test<T>(path: string, value: T): JsonPatch;
     reset(): JsonPatch;
     getArray(): any[];
     toJSON(): any;
-    static diff<T>(target: T, properties?: Object, patch?: JsonPatch, prefix?: string, separator?: string, wildcard?: string): JsonPatch;
+    static diff<T>(target: T, properties?: string[], patch?: JsonPatch, prefix?: string, separator?: string, wildcard?: string): JsonPatch;
 }
