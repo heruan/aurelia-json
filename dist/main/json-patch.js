@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var type_binder_1 = require("type-binder");
 var metadataKeys = require("./metadata-keys");
 var JsonPatch = (function () {
@@ -72,11 +73,13 @@ var JsonPatch = (function () {
     JsonPatch.prototype.toJSON = function () {
         return this.getArray();
     };
-    JsonPatch.diff = function (target, properties, patch, prefix, separator, wildcard) {
+    JsonPatch.diff = function (target, properties, patch, prefix, separator, wildcard, seen) {
         if (properties === void 0) { properties = Object.keys(target); }
         if (patch === void 0) { patch = new JsonPatch(); }
         if (separator === void 0) { separator = "/"; }
         if (wildcard === void 0) { wildcard = "-"; }
+        if (seen === void 0) { seen = new Set(); }
+        seen.add(target);
         var _loop_1 = function (key) {
             var currentValue = target[key];
             if (Reflect.hasMetadata(type_binder_1.binderPropertyTrackValue, target, key)) {
@@ -87,8 +90,8 @@ var JsonPatch = (function () {
                     // patch.test(pointer, originalValue);
                     patch.replace([prefix, key].join(separator), currentValue);
                 }
-                else if (currentValue !== null && typeof currentValue === "object") {
-                    JsonPatch.diff(currentValue, Object.keys(currentValue), patch, [prefix, key].join(separator), separator, wildcard);
+                else if (currentValue !== null && typeof currentValue === "object" && !seen.has(currentValue)) {
+                    JsonPatch.diff(currentValue, Object.keys(currentValue), patch, [prefix, key].join(separator), separator, wildcard, seen);
                 }
             }
             else if (currentValue !== null && Reflect.hasMetadata(type_binder_1.binderPropertyEntriesValue, target, key)) {
@@ -106,8 +109,8 @@ var JsonPatch = (function () {
                         // patch.test(pointer, value);
                         patch.replace(pointer, currentEntries_1[index], Reflect.getMetadata(metadataKeys.serializer, target, key));
                     }
-                    else if (value !== null && typeof value === "object") {
-                        JsonPatch.diff(value, Object.keys(value), patch, pointer, separator, wildcard);
+                    else if (value !== null && typeof value === "object" && !seen.has(value)) {
+                        JsonPatch.diff(value, Object.keys(value), patch, pointer, separator, wildcard, seen);
                     }
                 });
                 if (currentEntries_1.length > originalEntries.length) {

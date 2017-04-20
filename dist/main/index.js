@@ -2,6 +2,7 @@
 function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
+Object.defineProperty(exports, "__esModule", { value: true });
 var aurelia_http_client_1 = require("aurelia-http-client");
 var json_schema_1 = require("./json-schema");
 exports.JsonSchema = json_schema_1.JsonSchema;
@@ -13,17 +14,14 @@ var json_encoder_1 = require("./json-encoder");
 exports.JsonEncoder = json_encoder_1.JsonEncoder;
 var json_decoder_1 = require("./json-decoder");
 exports.JsonDecoder = json_decoder_1.JsonDecoder;
+var json_message_content_interceptor_1 = require("./json-message-content-interceptor");
+exports.JsonMessageContentInterceptor = json_message_content_interceptor_1.JsonMessageContentInterceptor;
 var json_multipart_related_interceptor_1 = require("./json-multipart-related-interceptor");
 exports.JsonMultipartRelatedInterceptor = json_multipart_related_interceptor_1.JsonMultipartRelatedInterceptor;
 function configure(frameworkConfiguration, pluginConfiguration) {
     var container = frameworkConfiguration.container;
     var httpClient = container.get(aurelia_http_client_1.HttpClient);
-    var jsonDecoder = new json_decoder_1.JsonDecoder();
-    container.registerTransient(json_encoder_1.JsonEncoder);
-    container.registerInstance(json_decoder_1.JsonDecoder, jsonDecoder);
-    if (pluginConfiguration) {
-        pluginConfiguration(jsonDecoder);
-    }
+    httpClient.configure(function (x) { return x.withInterceptor(new json_message_content_interceptor_1.JsonMessageContentInterceptor()); });
 }
 exports.configure = configure;
 __export(require("./decorators"));

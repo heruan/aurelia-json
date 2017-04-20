@@ -81,7 +81,8 @@ export class JsonPatch {
         return this.getArray();
     }
 
-    public static diff<T>(target: T, properties: string[] = Object.keys(target), patch: JsonPatch = new JsonPatch(), prefix?: string, separator: string = "/", wildcard: string = "-"): JsonPatch {
+    public static diff<T>(target: T, properties: string[] = Object.keys(target), patch: JsonPatch = new JsonPatch(), prefix?: string, separator: string = "/", wildcard: string = "-", seen: Set<Object> = new Set()): JsonPatch {
+        seen.add(target);
         for (let key of properties) {
             let currentValue = target[key];
             if (Reflect.hasMetadata(binderPropertyTrackValue, target, key)) {
@@ -91,8 +92,8 @@ export class JsonPatch {
                     let pointer = [prefix, key].join(separator);
                     // patch.test(pointer, originalValue);
                     patch.replace([prefix, key].join(separator), currentValue);
-                } else if (currentValue !== null && typeof currentValue === "object") {
-                    JsonPatch.diff(currentValue, Object.keys(currentValue), patch, [prefix, key].join(separator), separator, wildcard);
+                } else if (currentValue !== null && typeof currentValue === "object" && !seen.has(currentValue)) {
+                    JsonPatch.diff(currentValue, Object.keys(currentValue), patch, [prefix, key].join(separator), separator, wildcard, seen);
                 }
             } else if (currentValue !== null && Reflect.hasMetadata(binderPropertyEntriesValue, target, key)) {
                 let trackingCallback: <I extends Iterable<V>, V>(iterable: I) => V[] = Reflect.getMetadata(binderPropertyEntries, target, key);
@@ -107,8 +108,8 @@ export class JsonPatch {
                     } else if (!comparingCallback(value, currentEntries[index])) {
                         // patch.test(pointer, value);
                         patch.replace(pointer, currentEntries[index], Reflect.getMetadata(metadataKeys.serializer, target, key));
-                    } else if (value !== null && typeof value === "object") {
-                        JsonPatch.diff(value, Object.keys(value), patch, pointer, separator, wildcard);
+                    } else if (value !== null && typeof value === "object" && !seen.has(value)) {
+                        JsonPatch.diff(value, Object.keys(value), patch, pointer, separator, wildcard, seen);
                     }
                 });
                 if (currentEntries.length > originalEntries.length) {

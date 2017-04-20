@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var type_binder_1 = require("type-binder");
 var json_patch_1 = require("../../main/json-patch");
 var json_encoder_1 = require("../../main/json-encoder");
@@ -22,7 +23,7 @@ describe("json-patch", function () {
         __metadata("design:type", Number)
     ], Foo.prototype, "a", void 0);
     __decorate([
-        type_binder_1.bind(Bar), type_binder_1.track(),
+        type_binder_1.bind(function () { return Bar; }), type_binder_1.track(),
         __metadata("design:type", Bar)
     ], Foo.prototype, "bar", void 0);
     var Bar = (function () {
@@ -65,19 +66,19 @@ describe("json-patch", function () {
             return Bag;
         }());
         __decorate([
-            type_binder_1.bind(Array),
+            type_binder_1.bind(function () { return Array; }),
             type_binder_1.trackIterable(),
             __metadata("design:type", Array)
         ], Bag.prototype, "numbers", void 0);
         __decorate([
-            type_binder_1.bind(Set),
-            type_binder_1.generics(Bar),
+            type_binder_1.bind(function () { return Set; }),
+            type_binder_1.generics(function () { return Bar; }),
             type_binder_1.trackIterable(),
             __metadata("design:type", Set)
         ], Bag.prototype, "bars", void 0);
         __decorate([
-            type_binder_1.bind(Map),
-            type_binder_1.generics(Foo, Bar),
+            type_binder_1.bind(function () { return Map; }),
+            type_binder_1.generics(function () { return Foo; }, function () { return Bar; }),
             type_binder_1.trackIterable(function (i) { return Array.from(i); }, function (v1, v2) { return v1.every(function (v, i) { return v === v2[i]; }); }),
             __metadata("design:type", Map)
         ], Bag.prototype, "foobars", void 0);

@@ -7,7 +7,7 @@ describe("json-patch", () => {
     class Foo {
         @track() a: number;
         b: number;
-        @bind(Bar) @track() bar: Bar;
+        @bind(() => Bar) @track() bar: Bar;
     }
 
     class Bar {
@@ -41,17 +41,17 @@ describe("json-patch", () => {
 
     it("produces valid patch for iterables", () => {
         class Bag {
-            @bind(Array)
+            @bind(() => Array)
             @trackIterable()
             numbers: number[];
 
-            @bind(Set)
-            @generics(Bar)
+            @bind(() => Set)
+            @generics(() => Bar)
             @trackIterable()
             bars: Set<Bar>;
 
-            @bind(Map)
-            @generics(Foo, Bar)
+            @bind(() => Map)
+            @generics(() => Foo, () => Bar)
             @trackIterable<[Foo, Bar], Map<Foo, Bar>>(i => Array.from(i), (v1, v2) => v1.every((v, i) => v === v2[i]))
             foobars: Map<Foo, Bar>;
         }

@@ -1,1 +1,1 @@
-{"version":3,"sources":["../../src/main/metadata-keys.ts"],"names":[],"mappings":";AAAa,QAAA,UAAU,GAAG,aAAa,CAAC;AAC3B,QAAA,UAAU,GAAG,iBAAiB,CAAC","file":"metadata-keys.js","sourcesContent":["export const jsonIgnore = \"json:ignore\";\nexport const serializer = \"json:serializer\";\n"]}
+{"version":3,"sources":["../../src/main/metadata-keys.ts"],"names":[],"mappings":";;AAAa,QAAA,UAAU,GAAG,aAAa,CAAC;AAC3B,QAAA,UAAU,GAAG,iBAAiB,CAAC","file":"metadata-keys.js","sourcesContent":["export const jsonIgnore = \"json:ignore\";\nexport const serializer = \"json:serializer\";\n"]}

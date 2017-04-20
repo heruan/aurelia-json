@@ -13,7 +13,7 @@ export class JsonDecoder {
 
     public decode<T>(json: string, type: new(...args) => T, ...generics: any[]): T {
         let object = JSON.parse(json);
-        return typeof type["fromJSON"] === "function"
+        return type && typeof type["fromJSON"] === "function"
             ? type["fromJSON"](object, this, this.typeBinder)
             : this.typeBinder.bind(object, type, ...generics);
     }

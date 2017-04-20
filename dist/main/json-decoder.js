@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var aurelia_dependency_injection_1 = require("aurelia-dependency-injection");
 var type_binder_1 = require("type-binder");
 var JsonDecoder = (function () {
@@ -21,7 +22,7 @@ var JsonDecoder = (function () {
             generics[_i - 2] = arguments[_i];
         }
         var object = JSON.parse(json);
-        return typeof type["fromJSON"] === "function"
+        return type && typeof type["fromJSON"] === "function"
             ? type["fromJSON"](object, this, this.typeBinder)
             : (_a = this.typeBinder).bind.apply(_a, [object, type].concat(generics));
         var _a;

@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var metadataKeys = require("./metadata-keys");
 var JsonEncoder = (function () {
     function JsonEncoder() {
@@ -18,7 +19,7 @@ var JsonEncoder = (function () {
             return value.toString();
         }
         else if (typeof value === "string") {
-            return JsonEncoder.START_STRING + value + JsonEncoder.END_STRING;
+            return JSON.stringify(value);
         }
         else if (typeof value["toJSON"] === "function") {
             return this.encode(value.toJSON(), ignore);

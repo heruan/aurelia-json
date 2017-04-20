@@ -36,7 +36,7 @@ export class JsonEncoder {
         } else if (typeof value === "number") {
             return value.toString();
         } else if (typeof value === "string") {
-            return JsonEncoder.START_STRING + value + JsonEncoder.END_STRING;
+            return JSON.stringify(value);
         } else if (typeof value["toJSON"] === "function") {
             return this.encode(value.toJSON(), ignore);
         } else if (typeof value[Symbol.iterator] === "function") {

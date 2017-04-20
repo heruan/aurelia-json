@@ -11,5 +11,5 @@ export declare class JsonPatch {
     reset(): JsonPatch;
     getArray(): any[];
     toJSON(): any;
-    static diff<T>(target: T, properties?: string[], patch?: JsonPatch, prefix?: string, separator?: string, wildcard?: string): JsonPatch;
+    static diff<T>(target: T, properties?: string[], patch?: JsonPatch, prefix?: string, separator?: string, wildcard?: string, seen?: Set<Object>): JsonPatch;
 }
