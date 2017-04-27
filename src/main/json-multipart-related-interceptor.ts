@@ -18,7 +18,9 @@ export class JsonMultipartRelatedInterceptor implements Interceptor {
             return partId.toString();
         }, Blob, File);
         multipartRelated.addRootPart(new Part(encoder.encode(message.content), this.contentType), "/");
-        message.content = multipartRelated.toBlob();
+        let content = multipartRelated.toBlob();
+        message.content = content;
+        message.headers.add(HttpHeaders.CONTENT_TYPE, content.type);
         return message;
     }
 

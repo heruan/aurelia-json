@@ -15,7 +15,9 @@ var JsonMultipartRelatedInterceptor = (function () {
             return partId.toString();
         }, Blob, File);
         multipartRelated.addRootPart(new aurelia_http_utils_1.Part(encoder.encode(message.content), this.contentType), "/");
-        message.content = multipartRelated.toBlob();
+        var content = multipartRelated.toBlob();
+        message.content = content;
+        message.headers.add(aurelia_http_utils_1.HttpHeaders.CONTENT_TYPE, content.type);
         return message;
     };
     return JsonMultipartRelatedInterceptor;
